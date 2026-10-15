@@ -1,0 +1,35 @@
+---
+- name: Configure Security Zones
+  hosts: opnsense
+  gather_facts: false
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ ansible_host }}"
+      api_credential_file: "{{ api_credential_file }}"
+
+  tasks:
+    - name: Create interface groups (security zones)
+      oxlorg.opnsense.interface_group:
+        name: "{{ item.name }}"
+        members: "{{ item.members }}"
+        description: "{{ item.description }}"
+      loop:
+        - { name: "TRUST", members: ["lan"], description: "Zone for trusted internal networks" }
+        - { name: "UNTRUST", members: ["wan"], description: "Zone for untrusted external networks" }
+        - { name: "DMZ", members: ["dmz"], description: "Zone for public-facing services" }
+        - { name: "GUEST", members: ["guest"], description: "Zone for guest networks" }
+        - { name: "MGMT", members: ["mgmt"], description: "Zone for management networks" }
+
+    - name: Configure zone-based firewall rules
+      oxlorg.opnsense.rule:
+        interface: "{{ item.interface }}"
+        action: "{{ item.action }}"
+        source_net: "{{ item.source }}"
+        destination_net: "{{ item.destination }}"
+        description: "{{ item.description }}"
+      loop:
+        - { interface: "TRUST", action: "pass", source: "TRUST net", destination: "UNTRUST net", description: "Trust to Internet" }
+        - { interface: "DMZ", action: "pass", source: "DMZ net", destination: "UNTRUST net", description: "DMZ to Internet" }
+        - { interface: "GUEST", action: "pass", source: "GUEST net", destination: "UNTRUST net", description: "Guest to Internet" }
+        - { interface: "MGMT", action: "pass", source: "MGMT net", destination: "any", description: "Management access" }
+        - { interface: "TRUST", action: "block", source: "GUEST net", destination: "TRUST net", description: "Block Guest to Trust" }

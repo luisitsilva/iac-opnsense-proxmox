@@ -1,0 +1,44 @@
+---
+- name: Configure NAT
+  hosts: opnsense
+  gather_facts: false
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ ansible_host }}"
+      api_credential_file: "{{ api_credential_file }}"
+
+  tasks:
+    - name: Configure outbound NAT (SNAT) for LAN
+      oxlorg.opnsense.nat_source:
+        match_fields: ['description']
+        interface: "wan"
+        source_net: "172.18.4.0/24"
+        target: "wan_ip"
+        description: "NAT LAN to WAN"
+        state: present
+
+    - name: Configure destination NAT (port forward) for web server
+      oxlorg.opnsense.nat_destination:
+        match_fields: ['description']
+        interface: ["wan"]
+        protocol: "TCP"
+        destination_net: "any"  # Changed from "wan_ip" - use actual IP or alias
+        destination_port: "443"
+        target: "172.18.4.100"
+        local_port: "443"
+        description: "HTTPS to internal web server"
+        associated_rule: "pass"
+        state: present
+
+    - name: Configure destination NAT for SSH (restricted)
+      oxlorg.opnsense.nat_destination:  # FIXED: was destination_nat
+        match_fields: ['description']     # FIXED: was missing
+        interface: ["wan"]
+        protocol: "TCP"
+        destination_net: "any"  # Changed from "wan_ip"
+        destination_port: "2222"
+        target: "172.18.4.100"
+        local_port: "22"
+        description: "SSH to internal server (non-standard port)"
+        associated_rule: "pass"
+        state: present

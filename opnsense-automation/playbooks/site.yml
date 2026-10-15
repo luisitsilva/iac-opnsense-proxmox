@@ -1,0 +1,9 @@
+---
+- import_playbook: firewall_rules.yml
+- import_playbook: users_groups.yml
+- import_playbook: nat.yml
+- import_playbook: vpn_wireguard.yml
+- import_playbook: dns.yml
+- import_playbook: dhcp.yml
+- import_playbook: ids_ips.yml
+- import_playbook: security_zones.yml

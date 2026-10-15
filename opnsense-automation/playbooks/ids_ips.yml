@@ -1,0 +1,37 @@
+---
+- name: Configure IDS/IPS
+  hosts: opnsense
+  gather_facts: false
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ ansible_host }}"
+      api_credential_file: "{{ api_credential_file }}"
+
+  tasks:
+    - name: Enable and download IDS rulesets
+      oxlorg.opnsense.ids_ruleset:
+        name: "{{ item }}"
+        reload: true
+      loop:
+        - "ET open/drop"
+        - "ET open/emerging-all"
+        - "ET open/compromised"
+        - "abuse.ch/Feodo"
+
+    - name: Configure IDS to block malicious traffic
+      oxlorg.opnsense.ids_policy:
+        name: "Block malicious traffic"
+        priority: 1
+        rulesets: ["ET open/drop", "ET open/compromised", "abuse.ch/Feodo"]
+        action: ["drop"]
+        new_action: "drop"
+        enabled: true
+      when: opnsense_role == "master"
+
+    - name: Create custom IDS rule to block specific traffic
+      oxlorg.opnsense.ids_rule:
+        sid: 1000001
+        action: "drop"
+        enabled: true
+        description: "Block known malicious source"
+        source_ip: "10.0.0.0/8"

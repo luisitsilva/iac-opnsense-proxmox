@@ -1,0 +1,40 @@
+---
+- name: Configure DNS (Unbound)
+  hosts: opnsense
+  gather_facts: false
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ ansible_host }}"
+      api_credential_file: "{{ api_credential_file }}"
+
+  tasks:
+    - name: Configure Unbound general settings
+      oxlorg.opnsense.unbound_general:
+        enabled: true
+        dnssec: true
+        dns64: false
+        port: 53
+        interfaces: ["lan", "dmz"]
+        outgoing_interfaces: ["wan"]
+
+    - name: Add DNS host overrides
+      oxlorg.opnsense.unbound_host:
+        hostname: "{{ item.hostname }}"
+        domain: "{{ item.domain }}"
+        address: "{{ item.address }}"
+        description: "{{ item.description }}"
+      loop:
+        - { hostname: "opnsense", domain: "local", address: "172.18.4.81", description: "Firewall master" }
+        - { hostname: "opnsense-backup", domain: "local", address: "172.18.4.82", description: "Firewall backup" }
+        - { hostname: "webserver", domain: "local", address: "172.18.4.100", description: "Internal web server" }
+        - { hostname: "db", domain: "local", address: "172.18.4.101", description: "Database server" }
+
+    - name: Add DNS forwarding servers (DoT)
+      oxlorg.opnsense.unbound_forward:
+        domain: "."
+        server: "{{ item }}"
+        port: 853
+        type: "dot"
+      loop:
+        - "1.1.1.1"
+        - "8.8.8.8"

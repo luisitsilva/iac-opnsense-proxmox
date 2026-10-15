@@ -1,0 +1,32 @@
+---
+- name: Configure DHCP for 172.18.10.0/24
+  hosts: opnsense
+  gather_facts: false
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ ansible_host }}"
+      api_credential_file: "{{ api_credential_file }}"
+
+  tasks:
+    - name: Configure DHCP range
+      oxlorg.opnsense.dhcp:
+        interface: "dmz"
+        enabled: true
+        range_from: "172.18.10.100"
+        range_to: "172.18.10.200"
+        gateway: "172.18.10.1"
+        dns_servers: ["172.18.4.81", "172.18.4.82"]
+        domain: "dmz.local"
+        lease_time: 86400
+      when: opnsense_role == "master"
+
+    - name: Add static DHCP reservations
+      oxlorg.opnsense.dhcp_static:
+        interface: "dmz"
+        mac_address: "{{ item.mac }}"
+        ip_address: "{{ item.ip }}"
+        hostname: "{{ item.hostname }}"
+      loop:
+        - { mac: "aa:bb:cc:dd:ee:01", ip: "172.18.10.10", hostname: "dmz-web" }
+        - { mac: "aa:bb:cc:dd:ee:02", ip: "172.18.10.11", hostname: "dmz-app" }
+        - { mac: "aa:bb:cc:dd:ee:03", ip: "172.18.10.12", hostname: "dmz-db" }

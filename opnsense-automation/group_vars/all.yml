@@ -1,0 +1,2 @@
+# API credentials (loaded from environment or vault)
+api_credential_file: "{{ lookup('env', 'OPNSENSE_API_KEY_FILE') }}"

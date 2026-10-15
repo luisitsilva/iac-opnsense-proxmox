@@ -1,0 +1,36 @@
+---
+- name: Configure Users and Groups
+  hosts: opnsense
+  gather_facts: false
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ ansible_host }}"
+      api_credential_file: "{{ api_credential_file }}"
+
+  tasks:
+    - name: Create groups
+      oxlorg.opnsense.group:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        members: "{{ item.members | default([]) }}"
+      loop:
+        - { name: "admins", description: "Full administrators" }
+        - { name: "operators", description: "Network operators" }
+        - { name: "auditors", description: "Read-only auditors" }
+
+    - name: Create users
+      oxlorg.opnsense.user:
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        description: "{{ item.description }}"
+        email: "{{ item.email }}"
+        shell: "/bin/sh"
+        groups: "{{ item.groups }}"
+        privilege: "{{ item.privilege }}"
+        update_password: "on_create"
+      loop:
+        - { name: "admin", password: "{{ vault_admin_password }}", description: "Primary Administrator", email: "admin@example.com", groups: ["admins"], privilege: ["page-all"] }
+        - { name: "netops1", password: "{{ vault_netops1_password }}", description: "Network Operator 1", email: "netops1@example.com", groups: ["operators"], privilege: ["page-firewall", "page-interfaces"] }
+        - { name: "netops2", password: "{{ vault_netops2_password }}", description: "Network Operator 2", email: "netops2@example.com", groups: ["operators"], privilege: ["page-firewall", "page-interfaces"] }
+        - { name: "secops", password: "{{ vault_secops_password }}", description: "Security Operator", email: "secops@example.com", groups: ["operators"], privilege: ["page-firewall", "page-ids"] }
+        - { name: "auditor", password: "{{ vault_auditor_password }}", description: "Read-only Auditor", email: "auditor@example.com", groups: ["auditors"], privilege: ["page-diagnostics"] }

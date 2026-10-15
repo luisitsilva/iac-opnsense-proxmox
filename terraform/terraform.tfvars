@@ -1,0 +1,6 @@
+proxmox_endpoint  = ""
+proxmox_api_token = ""
+proxmox_node      = ""
+iso_datastore     = ""
+disk_datastore    = ""
+lan_bridge        = ""
