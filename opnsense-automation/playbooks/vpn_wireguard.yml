@@ -10,33 +10,33 @@
   tasks:
     - name: Create WireGuard server instance
       oxlorg.opnsense.wireguard_server:
-        name: "wg0"
-        enabled: true
-        listen_port: 51820
-        tunnel_address: "10.2.2.1/24"
-        private_key: "{{ vault_wg_private_key }}"
-        mtu: 1420
+        name: ""
+        enabled: 
+        listen_port: 
+        tunnel_address: " "
+        private_key: "{{  }}"
+        mtu: 
       when: opnsense_role == "master"
 
     - name: Create WireGuard peer for site-to-site
       oxlorg.opnsense.wireguard_peer:
-        name: "site-b"
-        enabled: true
-        server: "wg0"
-        public_key: "{{ vault_wg_peer_public_key }}"
-        allowed_ips: ["10.2.2.2/32", "192.168.0.0/24"]
-        endpoint_address: "203.0.113.2"
-        endpoint_port: 51820
-        keepalive_interval: 25
+        name: " "
+        enabled: 
+        server: " "
+        public_key: "{{  }}"
+        allowed_ips: [" ", " "]
+        endpoint_address: " "
+        endpoint_port: 
+        keepalive_interval: 
       when: opnsense_role == "master"
 
     - name: Allow WireGuard traffic on WAN
       oxlorg.opnsense.rule:
-        interface: "wan"
-        action: "pass"
-        protocol: "udp"
-        source_net: "any"
-        destination_net: "wan_ip"
-        destination_port: "51820"
-        description: "Allow WireGuard from peers"
-        sequence: "100"
+        interface: " "
+        action: " "
+        protocol: " "
+        source_net: " "
+        destination_net: " "
+        destination_port: " "
+        description: " "
+        sequence: " "

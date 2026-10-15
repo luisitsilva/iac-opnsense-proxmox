@@ -29,8 +29,8 @@
         privilege: "{{ item.privilege }}"
         update_password: "on_create"
       loop:
-        - { name: "admin", password: "{{ vault_admin_password }}", description: "Primary Administrator", email: "admin@example.com", groups: ["admins"], privilege: ["page-all"] }
-        - { name: "netops1", password: "{{ vault_netops1_password }}", description: "Network Operator 1", email: "netops1@example.com", groups: ["operators"], privilege: ["page-firewall", "page-interfaces"] }
-        - { name: "netops2", password: "{{ vault_netops2_password }}", description: "Network Operator 2", email: "netops2@example.com", groups: ["operators"], privilege: ["page-firewall", "page-interfaces"] }
-        - { name: "secops", password: "{{ vault_secops_password }}", description: "Security Operator", email: "secops@example.com", groups: ["operators"], privilege: ["page-firewall", "page-ids"] }
-        - { name: "auditor", password: "{{ vault_auditor_password }}", description: "Read-only Auditor", email: "auditor@example.com", groups: ["auditors"], privilege: ["page-diagnostics"] }
+        - { name: " ", password: "{{  }}", description: " ", email: " ", groups: [" "], privilege: [" "] }
+        - { name: " ", password: "{{  }}", description: " ", email: " ", groups: [" "], privilege: [" ", " "] }
+        - { name: " ", password: "{{  }}", description: " ", email: " ", groups: [" "], privilege: [" ", " "] }
+        - { name: " ", password: "{{  }}", description: " ", email: " ", groups: [" "], privilege: [" ", " "] }
+        - { name: " ", password: "{{  }}", description: " ", email: " ", groups: [" "], privilege: [" ", " "] }

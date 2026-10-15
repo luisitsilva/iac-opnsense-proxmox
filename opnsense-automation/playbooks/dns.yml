@@ -14,8 +14,8 @@
         dnssec: true
         dns64: false
         port: 53
-        interfaces: ["lan", "dmz"]
-        outgoing_interfaces: ["wan"]
+        interfaces: [" ", " "]
+        outgoing_interfaces: [" "]
 
     - name: Add DNS host overrides
       oxlorg.opnsense.unbound_host:
@@ -24,17 +24,17 @@
         address: "{{ item.address }}"
         description: "{{ item.description }}"
       loop:
-        - { hostname: "opnsense", domain: "local", address: "172.18.4.81", description: "Firewall master" }
-        - { hostname: "opnsense-backup", domain: "local", address: "172.18.4.82", description: "Firewall backup" }
-        - { hostname: "webserver", domain: "local", address: "172.18.4.100", description: "Internal web server" }
-        - { hostname: "db", domain: "local", address: "172.18.4.101", description: "Database server" }
+        - { hostname: " ", domain: " ", address: " ", description: "Firewall master" }
+        - { hostname: " ", domain: " ", address: " ", description: "Firewall backup" }
+        - { hostname: " ", domain: " ", address: " ", description: " " }
+        - { hostname: " ", domain: " ", address: " ", description: " " }
 
     - name: Add DNS forwarding servers (DoT)
       oxlorg.opnsense.unbound_forward:
         domain: "."
         server: "{{ item }}"
-        port: 853
+        port: 
         type: "dot"
       loop:
-        - "1.1.1.1"
-        - "8.8.8.8"
+        - " "
+        - " "

@@ -1,5 +1,5 @@
 ---
-- name: Configure DHCP for 172.18.10.0/24
+- name: Configure DHCP for x.x.x.x/x
   hosts: opnsense
   gather_facts: false
   module_defaults:
@@ -10,13 +10,13 @@
   tasks:
     - name: Configure DHCP range
       oxlorg.opnsense.dhcp:
-        interface: "dmz"
+        interface: " "
         enabled: true
-        range_from: "172.18.10.100"
-        range_to: "172.18.10.200"
-        gateway: "172.18.10.1"
-        dns_servers: ["172.18.4.81", "172.18.4.82"]
-        domain: "dmz.local"
+        range_from: " "
+        range_to: " "
+        gateway: " "
+        dns_servers: [" ", " "]
+        domain: " "
         lease_time: 86400
       when: opnsense_role == "master"
 
@@ -27,6 +27,6 @@
         ip_address: "{{ item.ip }}"
         hostname: "{{ item.hostname }}"
       loop:
-        - { mac: "aa:bb:cc:dd:ee:01", ip: "172.18.10.10", hostname: "dmz-web" }
-        - { mac: "aa:bb:cc:dd:ee:02", ip: "172.18.10.11", hostname: "dmz-app" }
-        - { mac: "aa:bb:cc:dd:ee:03", ip: "172.18.10.12", hostname: "dmz-db" }
+        - { mac: " ", ip: " ", hostname: " " }
+        - { mac: " ", ip: " ", hostname: " " }
+        - { mac: " ", ip: " ", hostname: " " }

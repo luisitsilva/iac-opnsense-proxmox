@@ -16,11 +16,11 @@
         content: "{{ item.content }}"
         description: "{{ item.description }}"
       loop:
-        - { name: "TRUST_NET", type: "network", content: ["172.18.4.0/24"], description: "Trusted internal networks" }
-        - { name: "UNTRUST_NET", type: "network", content: ["0.0.0.0/0"], description: "Untrusted external networks" }
-        - { name: "DMZ_NET", type: "network", content: ["172.18.10.0/24"], description: "DMZ networks" }
-        - { name: "GUEST_NET", type: "network", content: ["172.18.20.0/24"], description: "Guest networks" }
-        - { name: "MGMT_NET", type: "network", content: ["172.18.30.0/24"], description: "Management networks" }
+        - { name: "TRUST_NET", type: "network", content: [" "], description: "Trusted internal networks" }
+        - { name: "UNTRUST_NET", type: "network", content: [" "], description: "Untrusted external networks" }
+        - { name: "DMZ_NET", type: "network", content: [" "], description: "DMZ networks" }
+        - { name: "GUEST_NET", type: "network", content: [" "], description: "Guest networks" }
+        - { name: "MGMT_NET", type: "network", content: [" "], description: "Management networks" }
 
     - name: Create 50 generic firewall rules
       oxlorg.opnsense.rule:
@@ -32,7 +32,7 @@
         destination_net: "{{ item.destination_net }}"
         destination_port: "{{ item.destination_port | default('') }}"
         description: "{{ item.description }}"
-        enabled: true
+        enabled: 
         log: "{{ item.log | default(false) }}"
         sequence: "{{ item.sequence }}"
       loop:
@@ -44,27 +44,27 @@
         - { interface: "wan", action: "pass", protocol: "tcp", source_net: "any", destination_net: "any", destination_port: "any", description: "Allow established TCP", sequence: "10" }
         
         # DMZ rules
-        - { interface: "dmz", action: "pass", protocol: "tcp", source_net: "DMZ_NET", destination_net: "any", destination_port: "80,443", description: "DMZ to Internet HTTP/HTTPS", sequence: "20" }
-        - { interface: "dmz", action: "pass", protocol: "udp", source_net: "DMZ_NET", destination_net: "8.8.8.8", destination_port: "53", description: "DMZ DNS to Google", sequence: "21" }
-        - { interface: "dmz", action: "block", source_net: "DMZ_NET", destination_net: "TRUST_NET", description: "Block DMZ to Trust", sequence: "22" }
+        - { interface: "dmz", action: " ", protocol: " ", source_net: " ", destination_net: " ", destination_port: " ", description: " ", sequence: " " }
+        - { interface: "dmz", action: " ", protocol: " ", source_net: " ", destination_net: " ", destination_port: " ", description: " ", sequence: " " }
+        - { interface: "dmz", action: " ", source_net: " ", destination_net: " ", description: " ", sequence: " " }
         
         # Guest network restrictions
-        - { interface: "guest", action: "pass", protocol: "tcp", source_net: "GUEST_NET", destination_net: "any", destination_port: "80,443", description: "Guest to Internet HTTP/HTTPS", sequence: "30" }
-        - { interface: "guest", action: "pass", protocol: "udp", source_net: "GUEST_NET", destination_net: "any", destination_port: "53", description: "Guest DNS", sequence: "31" }
-        - { interface: "guest", action: "block", source_net: "GUEST_NET", destination_net: "TRUST_NET", description: "Block Guest to Trust", sequence: "32" }
-        - { interface: "guest", action: "block", source_net: "GUEST_NET", destination_net: "DMZ_NET", description: "Block Guest to DMZ", sequence: "33" }
+        - { interface: "guest", action: " ", protocol: " ", source_net: " ", destination_net: " ", destination_port: " ", description: " ", sequence: "" }
+        - { interface: "guest", action: " ", protocol: " ", source_net: " ", destination_net: " ", destination_port: " ", description: " ", sequence: "" }
+        - { interface: "guest", action: " ", source_net: " ", destination_net: " ", description: " ", sequence: "" }
+        - { interface: "guest", action: " ", source_net: " ", destination_net: " ", description: " ", sequence: "" }
         
         # Trust network rules
-        - { interface: "lan", action: "pass", protocol: "any", source_net: "TRUST_NET", destination_net: "any", description: "Trust to Internet all", sequence: "40" }
-        - { interface: "lan", action: "pass", protocol: "tcp", source_net: "TRUST_NET", destination_net: "DMZ_NET", destination_port: "80,443,22", description: "Trust to DMZ services", sequence: "41" }
+        - { interface: "lan", action: " ", protocol: " ", source_net: " ", destination_net: " ", description: " ", sequence: " " }
+        - { interface: "lan", action: " ", protocol: " ", source_net: " ", destination_net: " ", destination_port: " ", description: " ", sequence: " " }
         
         # Management access
-        - { interface: "lan", action: "pass", protocol: "tcp", source_net: "MGMT_NET", destination_net: "any", destination_port: "22,443,80", description: "Management access", sequence: "50" }
-        - { interface: "lan", action: "block", source_net: "TRUST_NET", destination_net: "MGMT_NET", description: "Block non-mgmt to management", sequence: "51" }
+        - { interface: "lan", action: " ", protocol: " ", source_net: " ", destination_net: " ", destination_port: " ", description: " ", sequence: " " }
+        - { interface: "lan", action: " ", source_net: " ", destination_net: " ", description: " ", sequence: " " }
         
         # ICMP rules
-        - { interface: "wan", action: "pass", protocol: "icmp", source_net: "any", destination_net: "any", description: "Allow ICMP echo", sequence: "60" }
+        - { interface: "wan", action: " ", protocol: " ", source_net: " ", destination_net: " ", description: " ", sequence: " " }
         
         # Block everything else on WAN
-        - { interface: "wan", action: "block", source_net: "any", destination_net: "any", description: "Default deny WAN", sequence: "999" }
+        - { interface: "wan", action: " ", source_net: " ", destination_net: " ", description: " ", sequence: " " }
         # ... (add 35+ more rules following this pattern for your specific services)
